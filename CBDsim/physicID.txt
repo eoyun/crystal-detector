@@ -1,0 +1,16 @@
+gamma 0
+  photoemission 0
+  compton 1
+  pair production 2
+  Rayl 3
+
+electron 1
+  multiple scattering 0
+  Ionization 1
+  Bremsstrahlung 2
+
+positron 2
+  multiple scattering 0
+  Ionization 1
+  Bremsstrahlung 2
+  annihilation 3
