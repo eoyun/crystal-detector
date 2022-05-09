@@ -19,7 +19,7 @@ CBDsimPrimaryGeneratorAction::CBDsimPrimaryGeneratorAction(G4int seed)
   fRandX = 0.*mm;
   fRandY = 0.*mm;
   fY_0 = 0.*cm;
-  fZ_0 = 2.25*cm;
+  fZ_0 = 0.*cm;
 
   fParticleGun = new G4ParticleGun(fNumPtc);
 

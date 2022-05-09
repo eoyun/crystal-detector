@@ -84,9 +84,9 @@ int main(int argc, char* argv[]){
   TH1F* ratio_fired_ele = new TH1F("ratio fired ele","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F *time1evt = new TH1F("","time;ns;p.e.",24000,0,240);
   TH1F *MCoptical = new TH1F("mc truth optical photon","mc truth optical photon; number of optical photon;evt",100,0,300000);
-  CBDsimRootInterface* cbdInterface = new CBDsimRootInterface(std::string(filename)+".root");
-  cbdInterface->set();
-  
+  CBDsimRootInterface* cbdInterface = new CBDsimRootInterface(std::string(filename));
+  // cbdInterface->set();
+  cbdInterface->GetChain("CBDsim");
   
   CBDsimInterface::CBDsimTimeStruct tmp;
   unsigned int entries =cbdInterface->entries();
