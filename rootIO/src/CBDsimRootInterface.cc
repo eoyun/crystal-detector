@@ -7,6 +7,17 @@ CBDsimRootInterface::CBDsimRootInterface(const std::string& filename)
 
 CBDsimRootInterface::~CBDsimRootInterface() {}
 
+void CBDsimRootInterface::PrepareChain(){
+  fEventData = new CBDsimInterface::CBDsimEventData();
+}
+
+void CBDsimRootInterface::GetChain(const std::string& treename){
+  fChain = new TChain(treename.c_str());
+  fChain->Add((fFilename+"/*.root").c_str());
+  fTree = fChain;
+  fTree->SetBranchAddress((treename+"EventData").c_str(),&fEventData);
+}
+
 void CBDsimRootInterface::init() {
   fEventData = new CBDsimInterface::CBDsimEventData();
   fFile = TFile::Open(fFilename.c_str(),"UPDATE");
@@ -38,6 +49,7 @@ void CBDsimRootInterface::write() {
 }
 
 void CBDsimRootInterface::close() {
-  fFile->Close();
+  if (fFile) fFile->Close();
   if (fEventData) delete fEventData;
+  if (fChain) delete fChain;
 }

@@ -4,6 +4,7 @@
 #include "CBDsimInterface.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TChain.h"
 
 class CBDsimRootInterface {
 public:
@@ -11,18 +12,22 @@ public:
   ~CBDsimRootInterface();
 
   void fill(const CBDsimInterface::CBDsimEventData* evt);
+  void GetChain(const std::string& treename);
   void read(CBDsimInterface::CBDsimEventData& evt);
   void create();
   void set();
   void write();
   void close();
 
+  TTree* getTree();
   unsigned int entries() { return fTree->GetEntries(); }
   unsigned int numEvt() { return fNumEvt; }
 
 private:
   void init();
-
+  void PrepareChain();
+  
+  TChain* fChain;
   TFile* fFile;
   TTree* fTree;
   std::string fFilename;
