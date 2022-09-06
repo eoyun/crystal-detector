@@ -1,0 +1,14 @@
+universe = vanilla
+executable = condor_exe.sh
+initialdir = SAVE_DIR
+arguments = $(ProcId)
+output = log/$(ProcId).out
+error = log/$(ProcId).err
+log = log/$(ProcId).log
+request_memory = 1 GB
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = /path/to/../CMakeFiles, /path/to/../CMakeCache.txt, /path/to/condor_exe.sh, /path/to/init.mac, /path/to/run_muon.mac, /path/to/run_ele.mac, /path/to/run_gamma.mac, /path/to/CBDsim
+
+queue 500
