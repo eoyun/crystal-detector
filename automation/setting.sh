@@ -6,7 +6,7 @@ declare -a options
 function set_vars()
 {
     INITIAL_DIR_ROW=`awk '/initialdir/{ print NR; exit }' condor.sub`
-    sed -i "${INITIAL_DIR_ROW}s/=.*/= $SAVE_DIR/" condor.sub
+    sed -i "${INITIAL_DIR_ROW}s|=.*|= $SAVE_DIR|" condor.sub
     
     TRANSFER_INPUT_ROW=`awk '/transfer_input_files/{ print NR; exit}' condor.sub`
     sed -i "${TRANSFER_INPUT_ROW}s?=.*?= ${CEPC_BUILD_DIR}/../CMakeFiles, ${CEPC_BUILD_DIR}/../CMakeCache.txt, ${CEPC_BUILD_DIR}/HTCondor_env.sh, ${CEPC_BUILD_DIR}/condor_exe.sh, ${CEPC_BUILD_DIR}/init.mac, ${CEPC_BUILD_DIR}/run_muon.mac, ${CEPC_BUILD_DIR}/run_ele.mac, ${CEPC_BUILD_DIR}/run_gamma.mac, ${CEPC_BUILD_DIR}/CBDsim?" condor.sub
@@ -60,9 +60,10 @@ echo -e "#                                                   #"
 echo -e "#####################################################"
 
 echo -e
-read -p "What is the dir where you want to store result data? : " SAVE_DIR
+read -p "What is the dir where you want to store result data? : " SAVE_DIR_TMP
+SAVE_DIR="/u/user/eoyun/SE_UserHome/crystal_data/$SAVE_DIR_TMP"
 mkdir -p $SAVE_DIR/log
 
-echo -e "\nThe output and log datas will be stored unger $CEPC_BUILD_DIR/$SAVE_DIR !\n"
+echo -e "\nThe output and log datas will be stored unger $SAVE_DIR !\n"
 choose_particle
 set_vars

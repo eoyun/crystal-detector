@@ -23,8 +23,8 @@ int main(int argc, char* argv[]){
   
   TString runname = argv[1];
   TString dfilename = "/u/user/eoyun/SE_UserHome/crystal_data/"+runname;
-  TString filename = Form("/u/user/eoyun/SE_UserHome/crystal_data/fdata/%s_10per_lin_rebin100/%s_10per_lin_rebin100",argv[1],argv[1]);
-  TString mkfilename = Form("mkdir -p /u/user/eoyun/SE_UserHome/crystal_data/fdata/%s_10per_lin_rebin100",argv[1]);
+  TString filename = Form("/u/user/eoyun/SE_UserHome/crystal_data/fdata/%s_10per/%s_10per",argv[1],argv[1]);
+  TString mkfilename = Form("mkdir -p /u/user/eoyun/SE_UserHome/crystal_data/fdata/%s_10per",argv[1]);
   
   system(mkfilename);
   float low = std::stof(argv[2]);
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]){
   int tothit=0;
   TCanvas* c1 = new TCanvas("c1","");
   int zedepnum=0;
-  TFile *timeST_file = new TFile(filename+"_timestructure.root","recreate");
+  TFile *timeL_file = new TFile(filename+"_timeL.root","recreate");
   while(cbdInterface->numEvt()<entries){
     if (cbdInterface->numEvt()%50 ==0)printf("Analyzing %dth event ...\n", cbdInterface->numEvt());
     CBDsimInterface::CBDsimEventData cbdEvt;
@@ -203,35 +203,22 @@ int main(int argc, char* argv[]){
     ratio_fired_ele_front->Fill((float)fired_sipm_front/num_ele_cell);
     tothit+=nhit;
     totenergy+=energy;
-    //timeL_file->WriteTObject(timeL2D);
+    timeL_file->WriteTObject(timeL2D);
     thits->Fill(nhit);
     thitsfront->Fill(nhitfront);
     if(Edep!=0)thitstotal->Fill(nhitfront+nhit);
     if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000333838);//21.07.20 calib const 0.00033838
     //onecell 0.000333501 total 0.000322373
-    timeST_file->WriteTObject(turnontime);
-    timeST_file->WriteTObject(turnontimefront);
-    //turnontime->Rebin(10);
-    turnontime->Rebin(100);
-    //turnontimefront->Rebin(10);
-    turnontimefront->Rebin(100);
+   
     int risetimebin=turnontime->FindFirstBinAbove(turnontime->GetMaximum()*0.1);
-    double tmp_back = turnontime->GetBinContent(risetimebin)-turnontime->GetMaximum()*0.1;
-    double tmp_back_1 = turnontime->GetBinContent(risetimebin)-turnontime->GetBinContent(risetimebin-1);
-    double t_back_tmp1 = turnontime->GetBinCenter(risetimebin);
-    double t_back_tmp2 = turnontime->GetBinCenter(risetimebin-1);
-    double t_back = t_back_tmp2+(t_back_tmp1-t_back_tmp2)*tmp_back/tmp_back_1;
-    if(Edep!=0) tTurnOnTime->Fill(t_back);
+    double t_back = turnontime->GetBinCenter(risetimebin);
+    if(Edep!=0) tTurnOnTime->Fill(turnontime->GetBinCenter(risetimebin));
     int risetimebinfront=turnontimefront->FindFirstBinAbove(turnontimefront->GetMaximum()*0.1);
-    double tmp_front = turnontimefront->GetBinContent(risetimebinfront)-turnontimefront->GetMaximum()*0.1;
-    double tmp_front_1 = turnontimefront->GetBinContent(risetimebinfront)-turnontimefront->GetBinContent(risetimebinfront-1);
-    double t_front_tmp1 = turnontimefront->GetBinCenter(risetimebinfront);
-    double t_front_tmp2 = turnontimefront->GetBinCenter(risetimebinfront-1);
-    double t_front = t_front_tmp2+(t_front_tmp1-t_front_tmp2)*tmp_front/tmp_front_1;
-    if(Edep!=0) tTurnOnTimefront->Fill(t_front);
+    double t_front = turnontimefront->GetBinCenter(risetimebinfront);
+    if(Edep!=0) tTurnOnTimefront->Fill(turnontimefront->GetBinCenter(risetimebinfront));
     if(Edep>0.6) tDeltaTime->Fill(t_back-t_front);
   }
-  timeST_file->Close();
+  timeL_file->Close();
   cbdInterface->close();
 
   TCanvas* c = new TCanvas("c","");
