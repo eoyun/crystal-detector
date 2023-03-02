@@ -313,12 +313,22 @@ fPWO->SetMaterialPropertiesTable(mpPWO);
   mpSiPM->AddProperty("EFFICIENCY",opEn,eff_SiPM,nEnt);
   fSiPMSurf = new G4OpticalSurface("SiPMSurf",glisur,polished,dielectric_metal);
   fSiPMSurf->SetMaterialPropertiesTable(mpSiPM);
-
-  G4double filterEff[nEnt] = {
+  
+  G4double filterEff[nEnt] = {//yellow filter
+    0.913, 0.913, 0.913, 0.913, 0.913, 0.913, 0.913, 0.913, 
+    0.913, 0.912, 0.910, 0.907, 0.904, 0.899, 0.884, 0.692, 
+    0.015, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
+  };
+  /*G4double filterEff[nEnt] = {
     1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000,
     1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 0.900, 0.734,
     0.568, 0.402, 0.296, 0.070, 0.000, 0.000, 0.000, 0.000, 0.000
-  };
+  };*/
+  /*G4double filterEff[nEnt] = { //UG11 filter ; need to more detail value
+    0.000, 0.000, 0.000, 0.050, 0.100, 0.300, 0.100, 0.000,
+    0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000,
+    0.000, 0.000, 0.000, 0.000, 0.000, 0.450, 0.900, 0.900, 0.900
+  };*/
   G4double filterRef[nEnt]; std::fill_n(filterRef,nEnt,0.);
   G4double RI_gel[nEnt]; std::fill_n(RI_gel,nEnt,1.52);
   mpFilter = new G4MaterialPropertiesTable();

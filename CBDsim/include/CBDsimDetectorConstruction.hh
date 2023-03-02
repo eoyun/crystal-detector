@@ -49,6 +49,8 @@ private:
   std::vector<CBDsimSiPMSD*> fSiPMSD;
   G4LogicalVolume* fWaferlogical;
   G4LogicalVolume* fWaferlogicalFront;
+  G4LogicalVolume* fFilterlogical;
+  G4LogicalVolume* fFilterlogicalFront;
 };
 
 class fiberSpec {

@@ -123,6 +123,11 @@ G4VPhysicalVolume* CBDsimDetectorConstruction::Construct() {
   G4VSolid* sipmEnvSolid = new G4Box("sipmEnvSolid",fSiPMX/2.,fSiPMX/2.,fSiPMH/2.);
   G4LogicalVolume* sipmEnvLogical = new G4LogicalVolume(sipmEnvSolid,FindMaterial("G4_Galactic"),"sipmEnvLogical");
 
+  G4VSolid* filterSolid = new G4Box("filterSolid",fSiPMX/2.,fSiPMX/2.,fFilterT/2.);
+  fFilterlogical = new G4LogicalVolume(filterSolid,FindMaterial("Gelatin"),"filterLogical");
+  G4VPhysicalVolume* filterPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-(fSiPMH-fFilterT)/2.),fFilterlogical,"filterPhysical",sipmEnvLogical,false,0);
+  G4LogicalSkinSurface* FilterSurface = new G4LogicalSkinSurface("FilterSurf",fWaferlogical,FindSurface("FilterSurf"));
+
   G4VSolid* waferSolid = new G4Box("waferSolid",fSiPMX/2.,fSiPMX/2.,fFilterT/2.);
   fWaferlogical = new G4LogicalVolume(waferSolid,FindMaterial("Silicon"),"waferLogical");
   G4VPhysicalVolume* waferPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,(fSiPMH-fFilterT)/2.),fWaferlogical,"waferPhysical",sipmEnvLogical,false,0);
@@ -130,15 +135,20 @@ G4VPhysicalVolume* CBDsimDetectorConstruction::Construct() {
 
   fWaferlogical->SetVisAttributes(fVisAttrGreen);
 
-  G4VSolid* windowSolid = new G4Box("windowSolid",fSiPMX/2.,fSiPMX/2.,(fSiPMH-fFilterT)/2.);
+  G4VSolid* windowSolid = new G4Box("windowSolid",fSiPMX/2.,fSiPMX/2.,(fSiPMH-2. * fFilterT)/2.);
   G4LogicalVolume* windowLogical = new G4LogicalVolume(windowSolid,FindMaterial("Glass"),"windowLogical");
-  G4VPhysicalVolume* windowPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-fFilterT/2.),windowLogical,"windowPhysical",sipmEnvLogical,false,0);
+  G4VPhysicalVolume* windowPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),windowLogical,"windowPhysical",sipmEnvLogical,false,0);
 
   G4VPhysicalVolume* sipmEnvPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,(fTowerH+fSiPMH)/2.),sipmEnvLogical,"sipmEnvPhysical",towerEnvLogical,false,0);
 
   G4VSolid* sipmEnvSolidFront = new G4Box("sipmEnvSolidFront",fSiPMX/2.,fSiPMX/2.,fSiPMH/2.);
   G4LogicalVolume* sipmEnvLogicalFront = new G4LogicalVolume(sipmEnvSolidFront,FindMaterial("G4_Galactic"),"sipmEnvLogicalFront");
 
+  G4VSolid* filterSolidFront = new G4Box("filterSolidFront",fSiPMX/2.,fSiPMX/2.,fFilterT/2.);
+  fFilterlogicalFront = new G4LogicalVolume(filterSolidFront,FindMaterial("Gelatin"),"filterLogicalFront");
+  G4VPhysicalVolume* filterPhysicalFront = new G4PVPlacement(0,G4ThreeVector(0.,0.,(fSiPMH-fFilterT)/2.),fFilterlogicalFront,"filterPhysical",sipmEnvLogical,false,0);
+  G4LogicalSkinSurface* FilterSurfaceFront = new G4LogicalSkinSurface("FilterSurf",fWaferlogicalFront,FindSurface("FilterSurf"));
+  
   G4VSolid* waferSolidFront = new G4Box("waferSolidFront",fSiPMX/2.,fSiPMX/2.,fFilterT/2.);
   fWaferlogicalFront = new G4LogicalVolume(waferSolidFront,FindMaterial("Silicon"),"waferLogicalFront");
   G4VPhysicalVolume* waferPhysicalFront = new G4PVPlacement(0,G4ThreeVector(0.,0.,-(fSiPMH-fFilterT)/2.),fWaferlogicalFront,"waferPhysicalFront",sipmEnvLogicalFront,false,0);
@@ -146,9 +156,9 @@ G4VPhysicalVolume* CBDsimDetectorConstruction::Construct() {
 
   fWaferlogicalFront->SetVisAttributes(fVisAttrGreen);
 
-  G4VSolid* windowSolidFront = new G4Box("windowSolidFront",fSiPMX/2.,fSiPMX/2.,(fSiPMH-fFilterT)/2.);
+  G4VSolid* windowSolidFront = new G4Box("windowSolidFront",fSiPMX/2.,fSiPMX/2.,(fSiPMH - 2. * fFilterT)/2.);
   G4LogicalVolume* windowLogicalFront = new G4LogicalVolume(windowSolidFront,FindMaterial("Glass"),"windowLogicalFront");
-  G4VPhysicalVolume* windowPhysicalFront = new G4PVPlacement(0,G4ThreeVector(0.,0.,fFilterT/2.),windowLogicalFront,"windowPhysicalFront",sipmEnvLogicalFront,false,0);
+  G4VPhysicalVolume* windowPhysicalFront = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),windowLogicalFront,"windowPhysicalFront",sipmEnvLogicalFront,false,0);
 
   G4VPhysicalVolume* sipmEnvPhysicalFront = new G4PVPlacement(0,G4ThreeVector(0.,0.,-(fTowerH+fSiPMH)/2.),sipmEnvLogicalFront,"sipmEnvPhysicalFront",towerEnvLogical,false,0);
 
