@@ -47,7 +47,7 @@ CBDsimDetectorConstruction::CBDsimDetectorConstruction()
 
   fTowerH = 12*cm;
   fSiPMH = 0.3*mm;
-  fTowerX = 5.*mm;
+  fTowerX = 20.*mm;
   fFoilX = 0.016*mm;
   fAirX= 0.01*mm;
   fSiPMX = 20.*mm;
