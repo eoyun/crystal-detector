@@ -1,0 +1,13 @@
+#s macro can not be executed standalone
+/run/numberOfThreads 1
+/run/initialize
+/run/verbose 1
+
+/CBDsim/generator/y0 0.0 cm
+/CBDsim/generator/z0 0.0 cm
+
+/gun/particle ion
+/gun/ion 6 12 0 0
+/gun/energy 400 MeV
+/run/beamOn 10
+

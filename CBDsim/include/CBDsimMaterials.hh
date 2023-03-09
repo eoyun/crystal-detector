@@ -29,6 +29,8 @@ private:
   G4Material* fGelatin;
   G4Material* fLYSO;
   G4Material* fLSO;
+  G4Material* fCSI;
+  G4Material* fBGO;
   G4Material* fPWO;
   G4Material* fAl;
   G4OpticalSurface* fSiPMSurf;

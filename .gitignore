@@ -1,1 +1,6 @@
 *.root
+build/
+BGO/
+CSI/
+LYSO/
+install/

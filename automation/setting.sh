@@ -9,7 +9,7 @@ function set_vars()
     sed -i "${INITIAL_DIR_ROW}s/=.*/= $SAVE_DIR/" condor.sub
     
     TRANSFER_INPUT_ROW=`awk '/transfer_input_files/{ print NR; exit}' condor.sub`
-    sed -i "${TRANSFER_INPUT_ROW}s?=.*?= ${CEPC_BUILD_DIR}/../CMakeFiles, ${CEPC_BUILD_DIR}/../CMakeCache.txt, ${CEPC_BUILD_DIR}/HTCondor_env.sh, ${CEPC_BUILD_DIR}/condor_exe.sh, ${CEPC_BUILD_DIR}/init.mac, ${CEPC_BUILD_DIR}/run_muon.mac, ${CEPC_BUILD_DIR}/run_ele.mac, ${CEPC_BUILD_DIR}/run_gamma.mac, ${CEPC_BUILD_DIR}/CBDsim?" condor.sub
+    sed -i "${TRANSFER_INPUT_ROW}s?=.*?= ${CEPC_BUILD_DIR}/../CMakeFiles, ${CEPC_BUILD_DIR}/../CMakeCache.txt, ${CEPC_BUILD_DIR}/HTCondor_env.sh, ${CEPC_BUILD_DIR}/condor_exe.sh, ${CEPC_BUILD_DIR}/init.mac, ${CEPC_BUILD_DIR}/run_muon.mac, ${CEPC_BUILD_DIR}/run_ele.mac, ${CEPC_BUILD_DIR}/run_gamma.mac, ${CEPC_BUILD_DIR}/run_proton.mac, ${CEPC_BUILD_DIR}/run_carbon.mac, ${CEPC_BUILD_DIR}/CBDsim?" condor.sub
 
     #SOURCE_ROW=`awk '/source/{ print NR; exit }' condor_exe.sh`
     #sed -i "${SOURCE_ROW}s?.*?source ${CEPC_BUILD_DIR}/HTCondor_env.sh?" condor_exe.sh
@@ -25,7 +25,7 @@ function choose_particle()
 {
     echo -e "\nChoose the particle you want to shoot"
     PS3="Shoot: "
-    options=("muon" "ele" "Gamma" "Quit")
+    options=("muon" "ele" "Gamma" "Proton" "Carbon" "Quit")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -39,6 +39,14 @@ function choose_particle()
             
             "Gamma")
             MACRO="run_gamma.mac"
+            break;;
+            
+            "Proton")
+            MACRO="run_proton.mac"
+            break;;
+            
+            "Carbon")
+            MACRO="run_carbon.mac"
             break;;
             
             "Quit")

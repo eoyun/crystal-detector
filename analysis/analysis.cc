@@ -67,11 +67,11 @@ int main(int argc, char* argv[]){
   TH1I* thitsfront = new TH1I("p.e._front","p.e./evt(front);p.e.;evt",100,0,1500);thitsfront->Sumw2(); thitsfront->SetLineColor(kBlack); thitsfront->SetLineWidth(2);
   //std::cout<<"11"<<std::endl;
 
-  TH1F* tenergy = new TH1F("energy detected", "energy detected;MeV;evt",60,low,high);
+  TH1F* tenergy = new TH1F("energy detected", "energy detected;MeV;evt",200,low,high);
 
   TF1 *genergy = new TF1("genergy","gaus",10.3,10.7);genergy->SetLineColor(2);genergy->SetLineWidth(2);
 
-  TH1I* thitstotal = new TH1I("p.e._total","p.e./evt(total);p.e.;evt",100,0,1000);thitstotal->Sumw2(); thitstotal->SetLineColor(kBlack); thitstotal->SetLineWidth(2);
+  TH1I* thitstotal = new TH1I("p.e._total","p.e./evt(total);p.e.;evt",3000,0,3000);thitstotal->Sumw2(); thitstotal->SetLineColor(kBlack); thitstotal->SetLineWidth(2);
 
   TH2I* genparticle2D = new TH2I("2Dgenparticle","2D generated particle;x;y",30,0,30,30,0,30);
   TH2I* gengamma2D = new TH2I("2Dgengamma","generated gamma;x;y",30,0,30,30,0,30);
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
   TH1F* ratio_fired_ele = new TH1F("ratio fired ele","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F *time1evt = new TH1F("","time;ns;p.e.",24000,0,240);
   TH1F *MCoptical = new TH1F("mc truth optical photon","mc truth optical photon; number of optical photon;evt",100,0,300000);
-  CBDsimRootInterface* cbdInterface = new CBDsimRootInterface(std::string(filename));
+  CBDsimRootInterface* cbdInterface = new CBDsimRootInterface(std::string("../CBDsim/"+filename));
   // cbdInterface->set();
   cbdInterface->GetChain("CBDsim");
   
@@ -202,7 +202,9 @@ int main(int argc, char* argv[]){
     thits->Fill(nhit);
     thitsfront->Fill(nhitfront);
     if(Edep!=0)thitstotal->Fill(nhitfront+nhit);
-    if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000333838);//21.07.20 calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000333838);//21.07.20 calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
+    if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.010096081);//CsI calib const 0.00033838
     //onecell 0.000333501 total 0.000322373
    
     int risetimebin=turnontime->FindFirstBinAbove(1.5);
@@ -215,37 +217,39 @@ int main(int argc, char* argv[]){
   }
   timeL_file->Close();
   cbdInterface->close();
+  TFile *root_file = new TFile(filename+".root","recreate");
 
-  TCanvas* c = new TCanvas("c","");
-  tenergy->Fit(genergy,"R+");
 
   tXYriseTime->SetStats(kFALSE);
   tXYriseTimefront->SetStats(kFALSE);
- 
-  thitstotal->Draw("Hist");c->SaveAs(filename+"_totalp.e._total.png");
-  tTurnOnTime->Draw("Hist");c->SaveAs(filename+"_risetime.png");
-  tTurnOnTimefront->Draw("Hist");c->SaveAs(filename+"_risetime_front.png");
+   
+  thitstotal->Write();
+  tTurnOnTime->Write();
+  tTurnOnTimefront->Write();
+  
 
-  tenergy->Draw("Hist"); genergy->Draw("same"); c->SaveAs(filename+"_energy.png");
-  tEdep->Draw("Hist"); c->SaveAs(filename+"_Edep.png");
-  tT->Draw("Hist"); c->SaveAs(filename+"_t.png");
-  tWav->Draw("Hist"); c->SaveAs(filename+"_wav.png");
-  tNhit->Draw("Hist"); c->SaveAs(filename+"_hit.png");
-  thits->Draw("Hist");  c->SaveAs(filename+"_totalp.e._back.png");
-  tTfront->Draw("Hist"); c->SaveAs(filename+"_t_front.png");
-  tWavfront->Draw("Hist"); c->SaveAs(filename+"_wav_front.png");
-  tNhitfront->Draw("Hist"); c->SaveAs(filename+"_hit_front.png");
-  thitsfront->Draw("Hist");  c->SaveAs(filename+"_totalp.e._front.png");
-  genparticle2D->Draw("COL");c->SaveAs(filename+"_XY_gen.png");
-  gengamma2D->Draw("COL");c->SaveAs(filename+"_XY_gamma.png");
-  genelectron2D->Draw("COL");c->SaveAs(filename+"_XY_electron.png");
-  genpositron2D->Draw("COL");c->SaveAs(filename+"_XY_positron.png");
-  tXYriseTime->Draw("COLZ");c->SaveAs(filename+"_TOtimesipm.png");
-  tXYriseTimefront->Draw("COLZ");c->SaveAs(filename+"_TOtimesipmfront.png");
-  ratio_fired_ele->Draw("hist");c->SaveAs(filename+"_numOfFiredSiPM.png");
-  ratio_fired_ele_front->Draw("hist");c->SaveAs(filename+"_numOfFiredSiPMfront.png");
-  MCoptical->Draw("hist");c->SaveAs(filename+"_MCoptical.png");
-  tDeltaTime->Draw("hist");c->SaveAs(filename+"_deltatime.png");
+  tenergy->Write();
+  tEdep->Write();
+  tT->Write();
+  tWav->Write();
+  tNhit->Write();
+  thits->Write();
+  tTfront->Write();
+  tWavfront->Write();
+  tNhitfront->Write();
+  thitsfront->Write();
+  genparticle2D->Write();
+  gengamma2D->Write();
+  genelectron2D->Write();
+  genpositron2D->Write();
+  tXYriseTime->Write();
+  tXYriseTimefront->Write();
+  ratio_fired_ele->Write();
+  ratio_fired_ele_front->Write();
+  MCoptical->Write();
+  tDeltaTime->Write();
+
+  root_file->Close();
 
   TFile* deltatimeFile = new TFile(filename+"_deltatime.root","RECREATE");
   deltatimeFile->WriteTObject(tDeltaTime);
