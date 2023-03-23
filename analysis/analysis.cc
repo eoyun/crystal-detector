@@ -79,7 +79,8 @@ int main(int argc, char* argv[]){
   TH2I* genpositron2D = new TH2I("2Dgenppositron","generated positron;x;y",30,0,30,30,0,30);
   TH1F* risetimesipm = new TH1F("","1sipm;t(ns);p.e.",24000,0,240);
   TH1F* risetimesipmfront = new TH1F("","1sipm;t(ns);p.e.",24000,0,240);
-
+  TH3F* sec_pos = new TH3F("sec_3D","secondary;x(mm);y(mm);z(mm)",100,0,100,1000,-100,100,100,-100,100);
+  TH1F* PDGID = new TH1F("sec_ID","secondary PdgID",10000,0,10000);
   TH1F* ratio_fired_ele_front = new TH1F("ratio fired ele front","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F* ratio_fired_ele = new TH1F("ratio fired ele","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F *time1evt = new TH1F("","time;ns;p.e.",24000,0,240);
@@ -94,9 +95,10 @@ int main(int argc, char* argv[]){
   int tothit=0;
   TCanvas* c1 = new TCanvas("c1","");
   int zedepnum=0;
+  int ele=0, posi=0, proton=0, neutron=0, carbon=0, deutron=0, secondary=0,gamma=0,sec_evt=0,flag=1; 
   TFile *timeL_file = new TFile(filename+"_timeL.root","recreate");
   while(cbdInterface->numEvt()<entries){
-    if (cbdInterface->numEvt()%50 ==0)printf("Analyzing %dth event ...\n", cbdInterface->numEvt());
+    //if (cbdInterface->numEvt()%50 ==0)printf("Analyzing %dth event ...\n", cbdInterface->numEvt());
     CBDsimInterface::CBDsimEventData cbdEvt;
     cbdInterface->read(cbdEvt);
     int nhit=0;
@@ -118,6 +120,24 @@ int main(int argc, char* argv[]){
       Edep += edep.Edep;
     }
     tEdep->Fill(Edep);
+    for (auto second : cbdEvt.seconds){
+      sec_pos->Fill(second.vx,second.vy,second.vz); 
+      PDGID->Fill(second.pdgId);
+      std::cout<< "pdg id is "<<second.pdgId<<std::endl;
+      secondary+=1;
+      if (flag) {
+        sec_evt+=1; 
+        flag=0;
+      }
+      if (second.pdgId == 11) ele +=1;
+      if (second.pdgId == -11) posi +=1;
+      if (second.pdgId == 2212) neutron +=1;
+      if (second.pdgId == 2112) proton +=1;
+      if (second.pdgId == 1000060120) carbon +=1;
+      if (second.pdgId == 1000010020) deutron +=1;
+      if (second.pdgId == 22) gamma +=1;
+    }
+    flag=1;
     for (auto tower: cbdEvt.towers){
       for (auto sipm:tower.SiPMs){
         tsipmXY->Fill(sipm.x,sipm.y,sipm.count);
@@ -217,6 +237,8 @@ int main(int argc, char* argv[]){
   }
   timeL_file->Close();
   cbdInterface->close();
+  std::cout << "total evt : "<<entries<<", secondary evt : "<<sec_evt<<std::endl;
+  std::cout << "total secondary : "<<secondary<< ", electron :"<<ele<<",positron : "<<posi<< ", gamma : "<<gamma<<", proton : "<<proton<<" , neutron : "<<neutron<<", deutron : "<<deutron<<",carbon : "<<carbon<<std::endl;
   TFile *root_file = new TFile(filename+".root","recreate");
 
 
@@ -226,8 +248,8 @@ int main(int argc, char* argv[]){
   thitstotal->Write();
   tTurnOnTime->Write();
   tTurnOnTimefront->Write();
-  
-
+  sec_pos->Write();
+  PDGID->Write();
   tenergy->Write();
   tEdep->Write();
   tT->Write();

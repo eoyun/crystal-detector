@@ -98,7 +98,7 @@ G4VPhysicalVolume* CBDsimDetectorConstruction::Construct() {
   G4LogicalVolume* towerEnvLogical = new G4LogicalVolume(towerEnvSolid,FindMaterial("G4_AIR"),"towerEnvLogical");
 
   G4VSolid* towerSolid = new G4Box("towerSolid",fTowerX/2.,fTowerX/2.,fTowerH/2.);
-  G4LogicalVolume* towerLogical = new G4LogicalVolume(towerSolid,FindMaterial("CsI"),"towerLogical");
+  G4LogicalVolume* towerLogical = new G4LogicalVolume(towerSolid,FindMaterial("LYSO"),"towerLogical");
   G4VPhysicalVolume* towerPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),towerLogical,"towerPhysical",towerEnvLogical,false,0);
 
   towerLogical->SetVisAttributes(fVisAttrBlue);

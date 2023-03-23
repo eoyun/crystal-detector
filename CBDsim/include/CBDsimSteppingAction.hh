@@ -19,6 +19,8 @@ private:
   G4int num_test=0;
   CBDsimEventAction* fEventAction;
   CBDsimInterface::CBDsimEdepData fEdep;
+  CBDsimInterface::CBDsimSecondaryData fsec;
+  CBDsimInterface::CBDsimStepData fstep;
   CBDsimInterface::CBDsimPhoton photon;
   CBDsimInterface::CBDsimPhysicalevent physical;
   //physical.physicsNum=0;

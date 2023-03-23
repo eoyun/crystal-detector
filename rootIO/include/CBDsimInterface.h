@@ -84,6 +84,39 @@ public:
     int pdgId;
   };
 
+  struct CBDsimSecondaryData {
+    CBDsimSecondaryData() {};
+    virtual ~CBDsimSecondaryData() {};
+
+    float E;
+    float px;
+    float py;
+    float pz;
+    float vx;
+    float vy;
+    float vz;
+    float vt;
+    int pdgId;
+    int trackId;
+  };
+  
+  struct CBDsimStepData {
+    CBDsimStepData() {};
+    virtual ~CBDsimStepData() {};
+
+    float E;
+    float px;
+    float py;
+    float pz;
+    float vx;
+    float vy;
+    float vz;
+    float vt;
+    int pdgId;
+    int trackId;
+  };
+
+
   struct CBDsimGenData {
     CBDsimGenData() {};
     virtual ~CBDsimGenData() {};
@@ -108,6 +141,8 @@ public:
     std::vector<CBDsimTowerData> towers;
     std::vector<CBDsimEdepData> Edeps;
     std::vector<CBDsimLeakageData> leaks;
+    std::vector<CBDsimSecondaryData> seconds;
+    std::vector<CBDsimStepData> steps;
     std::vector<CBDsimGenData> GenPtcs;
     std::vector<CBDsimPhoton> opticalPhotons;
     std::vector<CBDsimPhysicalevent> totPhysicals;

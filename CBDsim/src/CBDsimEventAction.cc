@@ -199,7 +199,13 @@ void CBDsimEventAction::fillPhysics(CBDsimInterface::CBDsimPhysicalevent& physic
 
 }
 //void CBDsimEventAction::fillVexs(CBDsimInterface::CBDsimVertax& vexData){
+void CBDsimEventAction::fillSecondaries (CBDsimInterface::CBDsimSecondaryData secondary){
+  fEventData->seconds.push_back(secondary);
+}
 
+void CBDsimEventAction::fillSteps (CBDsimInterface::CBDsimStepData step){
+  fEventData->steps.push_back(step);
+}
 
 
 void CBDsimEventAction::queue() {
