@@ -20,8 +20,24 @@ void CBDsimSteppingAction::UserSteppingAction(const G4Step* step)
   G4Track* track = step->GetTrack();
 
   G4StepPoint* presteppoint = step->GetPreStepPoint();
+  G4StepPoint* poststeppoint = step->GetPostStepPoint();
   G4LogicalVolume* preVol = presteppoint->GetPhysicalVolume()->GetLogicalVolume();
   G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
+
+  if (poststeppoint->GetStepStatus() == fWorldBoundary) {
+    fLeak.E = track->GetTotalEnergy();
+    fLeak.px = track->GetMomentum().x();
+    fLeak.py = track->GetMomentum().y();
+    fLeak.pz = track->GetMomentum().z();
+    fLeak.vx = presteppoint->GetPosition().x();
+    fLeak.vy = presteppoint->GetPosition().y();
+    fLeak.vz = presteppoint->GetPosition().z();
+    fLeak.vt = presteppoint->GetGlobalTime();
+    fLeak.pdgId = track->GetDefinition()->GetPDGEncoding();
+
+    fEventAction->fillLeaks(fLeak);
+  }
+
 
   G4String matName = preVol->GetMaterial()->GetName();
 
@@ -32,13 +48,14 @@ void CBDsimSteppingAction::UserSteppingAction(const G4Step* step)
 
   if ( fEdep.Edep > 0. ) {
     fEventAction->fillEdeps(fEdep);
-    fstep.E = step->GetPostStepPoint()->GetTotalEnergy();
-    fstep.px =  step->GetPostStepPoint()->GetMomentum().getX();  
-    fstep.py =  step->GetPostStepPoint()->GetMomentum().getY();  
-    fstep.pz =  step->GetPostStepPoint()->GetMomentum().getZ();  
-    fstep.vx =  step->GetPostStepPoint()->GetPosition().getX();  
-    fstep.vy =  step->GetPostStepPoint()->GetPosition().getY();  
-    fstep.vz =  step->GetPostStepPoint()->GetPosition().getZ(); 
+    fstep.Edep = step->GetTotalEnergyDeposit();
+    fstep.E = step->GetPreStepPoint()->GetKineticEnergy();
+    fstep.px = (step->GetPostStepPoint()->GetMomentum().getX()+step->GetPreStepPoint()->GetMomentum().getX())/2.;  
+    fstep.py = (step->GetPostStepPoint()->GetMomentum().getY()+step->GetPreStepPoint()->GetMomentum().getY())/2.;  
+    fstep.pz = (step->GetPostStepPoint()->GetMomentum().getZ()+step->GetPreStepPoint()->GetMomentum().getZ())/2.;  
+    fstep.vx = (step->GetPostStepPoint()->GetPosition().getX()+step->GetPreStepPoint()->GetPosition().getX())/2.;  
+    fstep.vy = (step->GetPostStepPoint()->GetPosition().getY()+step->GetPreStepPoint()->GetPosition().getY())/2.;  
+    fstep.vz = (step->GetPostStepPoint()->GetPosition().getZ()+step->GetPreStepPoint()->GetPosition().getZ())/2.; 
     fstep.vt =  step->GetPostStepPoint()->GetGlobalTime();
     fstep.pdgId = track->GetDefinition()->GetPDGEncoding();
     fstep.trackId = step->GetTrack()->GetTrackID();

@@ -105,6 +105,7 @@ public:
     virtual ~CBDsimStepData() {};
 
     float E;
+    float Edep;
     float px;
     float py;
     float pz;

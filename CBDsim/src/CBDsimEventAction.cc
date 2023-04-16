@@ -207,6 +207,9 @@ void CBDsimEventAction::fillSteps (CBDsimInterface::CBDsimStepData step){
   fEventData->steps.push_back(step);
 }
 
+void CBDsimEventAction::fillLeaks (CBDsimInterface::CBDsimLeakageData leak){
+  fEventData->leaks.push_back(leak);
+}
 
 void CBDsimEventAction::queue() {
   while ( CBDsimRunAction::sNumEvt != CBDsimPrimaryGeneratorAction::sIdxEvt ) {

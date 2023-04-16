@@ -21,6 +21,7 @@ private:
   CBDsimInterface::CBDsimEdepData fEdep;
   CBDsimInterface::CBDsimSecondaryData fsec;
   CBDsimInterface::CBDsimStepData fstep;
+  CBDsimInterface::CBDsimLeakageData fLeak;
   CBDsimInterface::CBDsimPhoton photon;
   CBDsimInterface::CBDsimPhysicalevent physical;
   //physical.physicsNum=0;

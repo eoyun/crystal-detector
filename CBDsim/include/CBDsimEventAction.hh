@@ -20,6 +20,7 @@ public:
   void fillEdeps(CBDsimInterface::CBDsimEdepData& edepData);
   void fillSecondaries(CBDsimInterface::CBDsimSecondaryData secondary);
   void fillSteps(CBDsimInterface::CBDsimStepData step);
+  void fillLeaks(CBDsimInterface::CBDsimLeakageData leak);
   void fillOpticalPhoton(CBDsimInterface::CBDsimPhoton& photon, G4int oPnumber);
   void fillPhysics(CBDsimInterface::CBDsimPhysicalevent& physical,G4double x,G4double y,G4double z,G4double energy,G4String PartName,G4String PhysicName);
   //void fillVexs(CBDsimInterface::CBDsimVertax& vexData);

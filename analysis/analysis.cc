@@ -80,7 +80,17 @@ int main(int argc, char* argv[]){
   TH1F* risetimesipm = new TH1F("","1sipm;t(ns);p.e.",24000,0,240);
   TH1F* risetimesipmfront = new TH1F("","1sipm;t(ns);p.e.",24000,0,240);
   TH3F* sec_pos = new TH3F("sec_3D","secondary;x(mm);y(mm);z(mm)",100,0,100,1000,-100,100,100,-100,100);
+  TH3F* step_pos = new TH3F("step_3D","step;x(mm);y(mm);z(mm)",100,450,550,200,-100,100,200,-100,100);
+  TH1F* step_x = new TH1F("step_x","step;x(mm);E(MeV)",10000,0,1000);
+  TH1F* step_y = new TH1F("step_y","step;y(mm);E(MeV)",2000,-100,100);
+  TH1F* step_z = new TH1F("step_z","step;z(mm);E(MeV)",2000,-100,100);
   TH1F* PDGID = new TH1F("sec_ID","secondary PdgID",10000,0,10000);
+  TH1F* Leak_PDGID = new TH1F("leak_ID","leak PdgID",10000,0,10000);
+
+  TH1F* Leak_neutron_p = new TH1F("leak_neutron_momentum","neutron momentum;P(MeV/C);a.u.",100,0,2000);
+  TH1F* Leak_electron_p = new TH1F("leak_electron_momentum","electron momentum;P(MeV/C);a.u.",100,0,2000);
+  TH1F* Leak_gamma_p = new TH1F("leak_gamma_momentum","gamma momentum;P(MeV/C);a.u.",100,0,2000);
+  TH1F* Leak_proton_p = new TH1F("leak_proton_momentum","proton momentum;P(MeV/C);a.u.",100,0,2000);
   TH1F* ratio_fired_ele_front = new TH1F("ratio fired ele front","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F* ratio_fired_ele = new TH1F("ratio fired ele","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F *time1evt = new TH1F("","time;ns;p.e.",24000,0,240);
@@ -98,7 +108,7 @@ int main(int argc, char* argv[]){
   int ele=0, posi=0, proton=0, neutron=0, carbon=0, deutron=0, secondary=0,gamma=0,sec_evt=0,flag=1; 
   TFile *timeL_file = new TFile(filename+"_timeL.root","recreate");
   while(cbdInterface->numEvt()<entries){
-    //if (cbdInterface->numEvt()%50 ==0)printf("Analyzing %dth event ...\n", cbdInterface->numEvt());
+    if (cbdInterface->numEvt()%50 ==0)printf("Analyzing %dth event ...\n", cbdInterface->numEvt());
     CBDsimInterface::CBDsimEventData cbdEvt;
     cbdInterface->read(cbdEvt);
     int nhit=0;
@@ -120,10 +130,23 @@ int main(int argc, char* argv[]){
       Edep += edep.Edep;
     }
     tEdep->Fill(Edep);
+    for (auto step : cbdEvt.steps){
+      step_pos->Fill(step.vx,step.vx,step.vx,step.Edep/entries);
+      step_x->Fill(step.vx,step.Edep/entries);
+      step_y->Fill(step.vy,step.Edep/entries);
+      step_z->Fill(step.vz,step.Edep/entries);
+    }
+    for (auto leak : cbdEvt.leaks){
+      Leak_PDGID->Fill(leak.pdgId);
+      if(leak.pdgId==11)Leak_electron_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
+      if(leak.pdgId==22)Leak_gamma_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
+      if(leak.pdgId==2112)Leak_neutron_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
+      if(leak.pdgId==2212)Leak_proton_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
+    }
     for (auto second : cbdEvt.seconds){
       sec_pos->Fill(second.vx,second.vy,second.vz); 
       PDGID->Fill(second.pdgId);
-      std::cout<< "pdg id is "<<second.pdgId<<std::endl;
+      //std::cout<< "pdg id is "<<second.pdgId<<std::endl;
       secondary+=1;
       if (flag) {
         sec_evt+=1; 
@@ -221,10 +244,11 @@ int main(int argc, char* argv[]){
     timeL_file->WriteTObject(timeL2D);
     thits->Fill(nhit);
     thitsfront->Fill(nhitfront);
-    if(Edep!=0)thitstotal->Fill(nhitfront+nhit);
+    //if(Edep!=0)thitstotal->Fill(nhitfront+nhit);
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000333838);//21.07.20 calib const 0.00033838
-    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
-    if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.010096081);//CsI calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000355723);//LYSO calib const 0.00033838
+    if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.010096081);//CsI calib const 0.00033838
     //onecell 0.000333501 total 0.000322373
    
     int risetimebin=turnontime->FindFirstBinAbove(1.5);
@@ -250,6 +274,7 @@ int main(int argc, char* argv[]){
   tTurnOnTimefront->Write();
   sec_pos->Write();
   PDGID->Write();
+  Leak_PDGID->Write();
   tenergy->Write();
   tEdep->Write();
   tT->Write();
@@ -270,7 +295,14 @@ int main(int argc, char* argv[]){
   ratio_fired_ele_front->Write();
   MCoptical->Write();
   tDeltaTime->Write();
-
+  step_pos->Write();
+  step_x->Write();
+  step_y->Write();
+  step_z->Write();
+  Leak_electron_p->Write();
+  Leak_gamma_p->Write();
+  Leak_neutron_p->Write();
+  Leak_proton_p->Write();
   root_file->Close();
 
   TFile* deltatimeFile = new TFile(filename+"_deltatime.root","RECREATE");
