@@ -87,10 +87,12 @@ int main(int argc, char* argv[]){
   TH1F* PDGID = new TH1F("sec_ID","secondary PdgID",10000,0,10000);
   TH1F* Leak_PDGID = new TH1F("leak_ID","leak PdgID",10000,0,10000);
 
-  TH1F* Leak_neutron_p = new TH1F("leak_neutron_momentum","neutron momentum;P(MeV/C);a.u.",100,0,2000);
-  TH1F* Leak_electron_p = new TH1F("leak_electron_momentum","electron momentum;P(MeV/C);a.u.",100,0,2000);
-  TH1F* Leak_gamma_p = new TH1F("leak_gamma_momentum","gamma momentum;P(MeV/C);a.u.",100,0,2000);
-  TH1F* Leak_proton_p = new TH1F("leak_proton_momentum","proton momentum;P(MeV/C);a.u.",100,0,2000);
+  TH1F* Leak_neutron_p = new TH1F("leak_neutron_momentum","neutron momentum;P(MeV/C);a.u.",200,0,4000);
+  TH1F* Leak_electron_p = new TH1F("leak_electron_momentum","electron momentum;P(MeV/C);a.u.",200,0,4000);
+  TH1F* Leak_gamma_p = new TH1F("leak_gamma_momentum","gamma momentum;P(MeV/C);a.u.",200,0,4000);
+  TH1F* Leak_proton_p = new TH1F("leak_proton_momentum","proton momentum;P(MeV/C);a.u.",200,0,4000);
+  TH1F* Leak_H_p = new TH1F("leak_H_momentum","H momentum;P(MeV/C);a.u.",200,0,4000);
+  TH1F* Leak_He_p = new TH1F("leak_He_momentum","He momentum;P(MeV/C);a.u.",200,0,4000);
   TH1F* ratio_fired_ele_front = new TH1F("ratio fired ele front","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F* ratio_fired_ele = new TH1F("ratio fired ele","num of fired SiPM / num of cells include ele;ratio;evt",25,0,25);
   TH1F *time1evt = new TH1F("","time;ns;p.e.",24000,0,240);
@@ -138,6 +140,9 @@ int main(int argc, char* argv[]){
     }
     for (auto leak : cbdEvt.leaks){
       Leak_PDGID->Fill(leak.pdgId);
+      //std::cout << "leak id is "<<leak.pdgId<<std::endl;
+      if(leak.pdgId>1000010000&&leak.pdgId<1000020000) Leak_H_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
+      if(leak.pdgId>1000020000&&leak.pdgId<1000030000) Leak_He_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
       if(leak.pdgId==11)Leak_electron_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
       if(leak.pdgId==22)Leak_gamma_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
       if(leak.pdgId==2112)Leak_neutron_p->Fill(sqrt(leak.px*leak.px+leak.py*leak.py+leak.pz*leak.pz));
@@ -247,8 +252,11 @@ int main(int argc, char* argv[]){
     //if(Edep!=0)thitstotal->Fill(nhitfront+nhit);
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000333838);//21.07.20 calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000355723);//LYSO calib const 0.00033838
-    if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.010096081);//CsI calib const 0.00033838
+    if(Edep!=0) tenergy->Fill((nhit)*0.0005188);//LYSO one calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit)*0.003266);//BGO one calib const 0.00033838
+    //if(Edep!=0) tenergy->Fill((nhit)*0.01648);//CsI one calib const 0.00033838
     //onecell 0.000333501 total 0.000322373
    
     int risetimebin=turnontime->FindFirstBinAbove(1.5);
@@ -300,6 +308,8 @@ int main(int argc, char* argv[]){
   step_y->Write();
   step_z->Write();
   Leak_electron_p->Write();
+  Leak_H_p->Write();
+  Leak_He_p->Write();
   Leak_gamma_p->Write();
   Leak_neutron_p->Write();
   Leak_proton_p->Write();

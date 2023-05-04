@@ -1,6 +1,9 @@
 #include <iostream>
 #include "CBDsimDetectorConstruction.hh"
 #include "CBDsimActionInitialization.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option1.hh"
+#include "G4VModularPhysicsList.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -11,6 +14,7 @@
 #include "G4UImanager.hh"
 #include "G4OpticalPhysics.hh"
 #include "FTFP_BERT.hh"
+#include "QGSP_BERT.hh"
 #include "FTFP_BERT_HP.hh"
 #include "QGSP_BERT_HP.hh"
 #include "Randomize.hh"
@@ -50,6 +54,12 @@ int main(int argc, char** argv) {
 
   // physics module
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
+  //G4VModularPhysicsList* physicsList = new G4EmStandardPhysics;
+  //G4VPhysicsConstructor* EmPhysics = new G4EmStandardPhysics(1);
+  //G4VPhysicsConstructor* DecPhysics = new G4DecayPhysics(1);
+  //EmPhysics->ConstructParticle();
+  //EmPhysics->ConstructProcess();
+  //DecPhysics->ConstructProcess();
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   physicsList->RegisterPhysics(opticalPhysics);
   opticalPhysics->Configure(kCerenkov, true);

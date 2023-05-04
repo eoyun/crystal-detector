@@ -160,161 +160,164 @@ void CBDsimMaterials::CreateMaterials() {
   const G4int nEnt = sizeof(opEn) / sizeof(G4double);
 //////http://nuclear.korea.ac.kr/~lamps/geant4/G4MaterialPropertiesIndex_8hh_source.html
 
-G4double RI_Air[nEnt]; std::fill_n(RI_Air,nEnt,1.0);
-mpAir = new G4MaterialPropertiesTable();
-mpAir->AddProperty("RINDEX",opEn,RI_Air,nEnt);
-fAir->SetMaterialPropertiesTable(mpAir);
-
-//G4double refl_Air[nEnt]; std::fill_n(refl_Air,nEnt,0.);
-mpAirSurf = new G4MaterialPropertiesTable();
-//mpAirSurf->AddProperty("REFLECTIVITY",opEn,refl_Air,nEnt);
-fAirSurf = new G4OpticalSurface("AirSurf", glisur, polished, dielectric_dielectric);
-
-fAirSurf->SetMaterialPropertiesTable(mpAirSurf);
-
-
-/*
-  mpSiPM = new G4MaterialPropertiesTable();
-  mpSiPM->AddProperty("REFLECTIVITY",opEn,refl_SiPM,nEnt);
-  mpSiPM->AddProperty("EFFICIENCY",opEn,eff_SiPM,nEnt);
-  fSiPMSurf = new G4OpticalSurface("SiPMSurf",glisur,polished,dielectric_metal);
-  fSiPMSurf->SetMaterialPropertiesTable(mpSiPM);
-*/
-// G4double RI_Al[nEnt]={//https://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
-//   2.0412,2.2672,2.4942,2.6798,2.6717,2.5128,2.2317,1.9126,
-//   1.6664,1.4831,1.3456,1.2366,1.1419,1.0530,0.96521,0.87691,
-//   0.78834,0.70111,0.61722,0.53817,0.46582,0.40059,0.34288,0.29204,0.24765};
-// G4double refl_Al[nEnt]; std::fill_n(refl_Al, nEnt,1.0);
-G4double refl_Al[nEnt]={//https://eng.libretexts.org/Bookshelves/Materials_Science/Supplemental_Modules_(Materials_Science)/Optical_Properties/Metallic_Reflection
-  0.894, 0.887, 0.880, 0.873, 0.866, 0.876, 0.887, 0.897,
-  0.908, 0.910, 0.912, 0.914, 0.916, 0.918, 0.920, 0.921,
-  0.923, 0.925, 0.927, 0.928, 0.930, 0.928, 0.925, 0.923, 0.92};
-mpAlSurf = new G4MaterialPropertiesTable();
-// G4double refl_Al[nEnt]; std::fill_n(refl_Al,nEnt,1);
-mpAlSurf->AddProperty("REFLECTIVITY", opEn, refl_Al, nEnt);
-//mpAlSurf->AddProperty("RINDEX",opEn,RI_Al,nEnt);
-fAluminumSurf = new G4OpticalSurface("AluminumSurf", unified, polished, dielectric_metal);
-fAluminumSurf->SetMaterialPropertiesTable(mpAlSurf);
-
-
-/*G4double RI_Al[nEnt]={//https://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
-  2.0412,2.2672,2.4942,2.6798,2.6717,2.5128,2.2317,1.9126,
-  1.6664,1.4831,1.3456,1.2366,1.1419,1.0530,0.96521,0.87691,
-  0.78834,0.70111,0.61722,0.53817,0.46582,0.40059,0.34288,0.29204,0.24765};*/
-//G4double Abslength_Al[nEnt]; std::fill_n(Abslength_Al,nEnt,100*cm);
-
-//};
-// G4double RI_Al[nEnt]; std::fill_n(RI_Al,nEnt,2);
-mpAl = new G4MaterialPropertiesTable();
-// mpAl->AddProperty("RINDEX",opEn,RI_Al,nEnt);
-//mpAl->AddProperty("ABSLENGTH",opEn,Abslength_Al,nEnt);
-//mpAl->AddProperty("ABSLENGTH",opEn,abslength_Al,nEnt);
-// mpAl->AddProperty("REFLECTIVITY",opEn,refl_Al,nEnt);
-fAl->SetMaterialPropertiesTable(mpAl);
-
-
-  //--- LSO ---
-G4double RI_LSO[nEnt]; std::fill_n(RI_LSO, nEnt, 1.82);
-G4double Abslength_LSO[nEnt]; std::fill_n(Abslength_LSO, nEnt, 1.14*cm);
-G4double scintFast_LSO[nEnt]={//이거 근거 더 찾기
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.03, 0.07, 0.12, 0.16, 0.32,
-  0.50, 0.68, 0.92, 0.97, 0.50, 0.07, 0.00, 0.00, 0.00};
-mpLSO = new G4MaterialPropertiesTable();
-mpLSO->AddProperty("RINDEX",opEn,RI_LSO,nEnt);
-mpLSO->AddProperty("ABSLENGTH",opEn,Abslength_LSO,nEnt);
-mpLSO->AddConstProperty("SCINTILLATIONYIELD",30000./MeV);
-mpLSO->AddConstProperty("RESOLUTIONSCALE",1.0);//이것도
-mpLSO->AddProperty("FASTCOMPONENT",opEn,scintFast_LSO,nEnt);
-mpLSO->AddConstProperty("FASTTIMECONSTANT",40*ns);
-fLSO->SetMaterialPropertiesTable(mpLSO);
-
-//--- LYSO ---
-G4double RI_LYSO[nEnt]; std::fill_n(RI_LYSO, nEnt, 1.81);
-G4double Abslength_LYSO[nEnt]; std::fill_n(Abslength_LYSO, nEnt, 42*cm);
-G4double scintFast_LYSO[nEnt] = {
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.03, 0.07, 0.12, 0.16, 0.32,
-  0.50, 0.68, 0.92, 0.97, 0.50, 0.07, 0.00, 0.00, 0.00
-};
-mpLYSO = new G4MaterialPropertiesTable();
-mpLYSO->AddProperty("RINDEX",opEn,RI_LYSO,nEnt);
-mpLYSO->AddProperty("ABSLENGTH",opEn,Abslength_LYSO,nEnt);
-mpLYSO->AddProperty("FASTCOMPONENT",opEn,scintFast_LYSO,nEnt);
-mpLYSO->AddConstProperty("SCINTILLATIONYIELD",33200./MeV);
-mpLYSO->AddConstProperty("RESOLUTIONSCALE",2.0);
-mpLYSO->AddConstProperty("FASTTIMECONSTANT",36*ns);
-fLYSO->SetMaterialPropertiesTable(mpLYSO);
-
-//--- PbWO4 ---
-G4double RI_PWO[nEnt]; std::fill_n(RI_PWO,nEnt,2.16);
-G4double Abslength_PWO[nEnt]; std::fill_n(Abslength_PWO,nEnt,0.92*cm);
-//G4double scintFast_PWO[nEnt]={};
-//G4double scintSlow_PWO[nEnt]={};
-mpPWO = new G4MaterialPropertiesTable();
-mpPWO->AddProperty("RINDEX",opEn,RI_PWO,nEnt);
-mpPWO->AddProperty("ABSLENGTH",opEn,Abslength_PWO,nEnt);
-//mpPWO->AddProperty("FASTCOMPONENT",opEn,scintFast_PWO,nEnt);
-//mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
-mpPWO->AddConstProperty("SCINTILLATIONYIELD",400/MeV);
-mpPWO->AddConstProperty("RESOLUTIONSCALE",1.0);
-mpPWO->AddConstProperty("FASTTIMECONSTANT",6*ns);
-mpPWO->AddConstProperty("SLOWTIMECONSTANT",30*ns);
-fPWO->SetMaterialPropertiesTable(mpPWO);
-
-//--- CsI ---
-G4double RI_CSI[nEnt]; std::fill_n(RI_CSI,nEnt,1.95);
-G4double Abslength_CSI[nEnt]; std::fill_n(Abslength_CSI,nEnt,40*cm);
-//G4double scintFast_PWO[nEnt]={};
-//G4double scintSlow_PWO[nEnt]={};
-mpCSI = new G4MaterialPropertiesTable();
-mpCSI->AddProperty("RINDEX",opEn,RI_CSI,nEnt);
-mpCSI->AddProperty("ABSLENGTH",opEn,Abslength_CSI,nEnt);
-//mpPWO->AddProperty("FASTCOMPONENT",opEn,scintFast_PWO,nEnt);
-//mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
-/*G4double scintFast_CSI[nEnt] = {
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.03, 0.04,
-  0.05, 0.05, 0.04, 0.04, 0.04, 0.07, 0.17, 0.49, 0.59};/
-};
-G4double scintSlow_CSI[nEnt] = {
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.02, 0.03,
-  0.03, 0.03, 0.03, 0.02, 0.03, 0.05, 0.11, 0.32, 0.39
-};*/
-G4double scintFast_CSI[nEnt] = {
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.02, 0.05, 0.07,
-  0.08, 0.08, 0.07, 0.06, 0.07, 0.12, 0.28, 0.81, 0.98
-};
-mpCSI->AddProperty("FASTCOMPONENT",opEn,scintFast_CSI,nEnt);
-//mpCSI->AddProperty("SLOWCOMPONENT",opEn,scintSlow_CSI,nEnt);
-mpCSI->AddConstProperty("SCINTILLATIONYIELD",1900/MeV);
-mpCSI->AddConstProperty("RESOLUTIONSCALE",1.0);
-mpCSI->AddConstProperty("FASTTIMECONSTANT",15.7*ns);
-//mpCSI->AddConstProperty("SLOWTIMECONSTANT",35.8*ns);
-fCSI->SetMaterialPropertiesTable(mpCSI);
-
-//--- BGO ---
-G4double RI_BGO[nEnt]; std::fill_n(RI_BGO,nEnt,2.15);
-G4double Abslength_BGO[nEnt]; std::fill_n(Abslength_BGO,nEnt,40*cm);
-//G4double scintFast_PWO[nEnt]={};
-//G4double scintSlow_PWO[nEnt]={};
-G4double scintFast_BGO[nEnt] = {
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
-  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.02,
-  0.12, 0.47, 0.98, 0.72, 0.08, 0.02, 0.00, 0.00, 0.00
-};
-
-mpBGO = new G4MaterialPropertiesTable();
-mpBGO->AddProperty("RINDEX",opEn,RI_BGO,nEnt);
-mpBGO->AddProperty("ABSLENGTH",opEn,Abslength_BGO,nEnt);
-mpBGO->AddProperty("FASTCOMPONENT",opEn,scintFast_BGO,nEnt);
-//mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
-mpBGO->AddConstProperty("SCINTILLATIONYIELD",8000/MeV);
-mpBGO->AddConstProperty("RESOLUTIONSCALE",1.0);
-mpBGO->AddConstProperty("FASTTIMECONSTANT",300*ns);
-fBGO->SetMaterialPropertiesTable(mpBGO);
+  G4double RI_Air[nEnt]; std::fill_n(RI_Air,nEnt,1.0);
+  mpAir = new G4MaterialPropertiesTable();
+  mpAir->AddProperty("RINDEX",opEn,RI_Air,nEnt);
+  fAir->SetMaterialPropertiesTable(mpAir);
+  
+  //G4double refl_Air[nEnt]; std::fill_n(refl_Air,nEnt,0.);
+  mpAirSurf = new G4MaterialPropertiesTable();
+  //mpAirSurf->AddProperty("REFLECTIVITY",opEn,refl_Air,nEnt);
+  fAirSurf = new G4OpticalSurface("AirSurf", glisur, polished, dielectric_dielectric);
+  
+  fAirSurf->SetMaterialPropertiesTable(mpAirSurf);
+  
+  
+  /*
+    mpSiPM = new G4MaterialPropertiesTable();
+    mpSiPM->AddProperty("REFLECTIVITY",opEn,refl_SiPM,nEnt);
+    mpSiPM->AddProperty("EFFICIENCY",opEn,eff_SiPM,nEnt);
+    fSiPMSurf = new G4OpticalSurface("SiPMSurf",glisur,polished,dielectric_metal);
+    fSiPMSurf->SetMaterialPropertiesTable(mpSiPM);
+  */
+  // G4double RI_Al[nEnt]={//https://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
+  //   2.0412,2.2672,2.4942,2.6798,2.6717,2.5128,2.2317,1.9126,
+  //   1.6664,1.4831,1.3456,1.2366,1.1419,1.0530,0.96521,0.87691,
+  //   0.78834,0.70111,0.61722,0.53817,0.46582,0.40059,0.34288,0.29204,0.24765};
+  // G4double refl_Al[nEnt]; std::fill_n(refl_Al, nEnt,1.0);
+  G4double refl_Al[nEnt]={//https://eng.libretexts.org/Bookshelves/Materials_Science/Supplemental_Modules_(Materials_Science)/Optical_Properties/Metallic_Reflection
+    0.894, 0.887, 0.880, 0.873, 0.866, 0.876, 0.887, 0.897,
+    0.908, 0.910, 0.912, 0.914, 0.916, 0.918, 0.920, 0.921,
+    0.923, 0.925, 0.927, 0.928, 0.930, 0.928, 0.925, 0.923, 0.92};
+  mpAlSurf = new G4MaterialPropertiesTable();
+  // G4double refl_Al[nEnt]; std::fill_n(refl_Al,nEnt,1);
+  mpAlSurf->AddProperty("REFLECTIVITY", opEn, refl_Al, nEnt);
+  //mpAlSurf->AddProperty("RINDEX",opEn,RI_Al,nEnt);
+  fAluminumSurf = new G4OpticalSurface("AluminumSurf", unified, polished, dielectric_metal);
+  fAluminumSurf->SetMaterialPropertiesTable(mpAlSurf);
+  
+  
+  /*G4double RI_Al[nEnt]={//https://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
+    2.0412,2.2672,2.4942,2.6798,2.6717,2.5128,2.2317,1.9126,
+    1.6664,1.4831,1.3456,1.2366,1.1419,1.0530,0.96521,0.87691,
+    0.78834,0.70111,0.61722,0.53817,0.46582,0.40059,0.34288,0.29204,0.24765};*/
+  //G4double Abslength_Al[nEnt]; std::fill_n(Abslength_Al,nEnt,100*cm);
+  
+  //};
+  // G4double RI_Al[nEnt]; std::fill_n(RI_Al,nEnt,2);
+  mpAl = new G4MaterialPropertiesTable();
+  // mpAl->AddProperty("RINDEX",opEn,RI_Al,nEnt);
+  //mpAl->AddProperty("ABSLENGTH",opEn,Abslength_Al,nEnt);
+  //mpAl->AddProperty("ABSLENGTH",opEn,abslength_Al,nEnt);
+  // mpAl->AddProperty("REFLECTIVITY",opEn,refl_Al,nEnt);
+  fAl->SetMaterialPropertiesTable(mpAl);
+  
+  
+    //--- LSO ---
+  G4double RI_LSO[nEnt]; std::fill_n(RI_LSO, nEnt, 1.82);
+  G4double Abslength_LSO[nEnt]; std::fill_n(Abslength_LSO, nEnt, 1.14*cm);
+  G4double scintFast_LSO[nEnt]={//이거 근거 더 찾기
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.03, 0.07, 0.12, 0.16, 0.32,
+    0.50, 0.68, 0.92, 0.97, 0.50, 0.07, 0.00, 0.00, 0.00};
+  mpLSO = new G4MaterialPropertiesTable();
+  mpLSO->AddProperty("RINDEX",opEn,RI_LSO,nEnt);
+  mpLSO->AddProperty("ABSLENGTH",opEn,Abslength_LSO,nEnt);
+  mpLSO->AddConstProperty("SCINTILLATIONYIELD",30000./MeV);
+  mpLSO->AddConstProperty("RESOLUTIONSCALE",1.0);//이것도
+  mpLSO->AddProperty("FASTCOMPONENT",opEn,scintFast_LSO,nEnt);
+  mpLSO->AddConstProperty("FASTTIMECONSTANT",40*ns);
+  fLSO->SetMaterialPropertiesTable(mpLSO);
+  
+  //--- LYSO ---
+  G4double RI_LYSO[nEnt]; std::fill_n(RI_LYSO, nEnt, 1.81);
+  G4double Abslength_LYSO[nEnt]; std::fill_n(Abslength_LYSO, nEnt, 42*cm);
+  G4double scintFast_LYSO[nEnt] = {
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.03, 0.07, 0.12, 0.16, 0.32,
+    0.50, 0.68, 0.92, 0.97, 0.50, 0.07, 0.00, 0.00, 0.00
+  };
+  mpLYSO = new G4MaterialPropertiesTable();
+  mpLYSO->AddProperty("RINDEX",opEn,RI_LYSO,nEnt);
+  mpLYSO->AddProperty("ABSLENGTH",opEn,Abslength_LYSO,nEnt);
+  mpLYSO->AddProperty("FASTCOMPONENT",opEn,scintFast_LYSO,nEnt);
+  mpLYSO->AddConstProperty("SCINTILLATIONYIELD",33200./MeV);
+  mpLYSO->AddConstProperty("RESOLUTIONSCALE",2.0);
+  mpLYSO->AddConstProperty("FASTTIMECONSTANT",36*ns);
+  fLYSO->SetMaterialPropertiesTable(mpLYSO);
+  fLYSO->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+  
+  //--- PbWO4 ---
+  G4double RI_PWO[nEnt]; std::fill_n(RI_PWO,nEnt,2.16);
+  G4double Abslength_PWO[nEnt]; std::fill_n(Abslength_PWO,nEnt,0.92*cm);
+  //G4double scintFast_PWO[nEnt]={};
+  //G4double scintSlow_PWO[nEnt]={};
+  mpPWO = new G4MaterialPropertiesTable();
+  mpPWO->AddProperty("RINDEX",opEn,RI_PWO,nEnt);
+  mpPWO->AddProperty("ABSLENGTH",opEn,Abslength_PWO,nEnt);
+  //mpPWO->AddProperty("FASTCOMPONENT",opEn,scintFast_PWO,nEnt);
+  //mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
+  mpPWO->AddConstProperty("SCINTILLATIONYIELD",400/MeV);
+  mpPWO->AddConstProperty("RESOLUTIONSCALE",1.0);
+  mpPWO->AddConstProperty("FASTTIMECONSTANT",6*ns);
+  mpPWO->AddConstProperty("SLOWTIMECONSTANT",30*ns);
+  fPWO->SetMaterialPropertiesTable(mpPWO);
+  
+  //--- CsI ---
+  G4double RI_CSI[nEnt]; std::fill_n(RI_CSI,nEnt,1.95);
+  G4double Abslength_CSI[nEnt]; std::fill_n(Abslength_CSI,nEnt,40*cm);
+  //G4double scintFast_PWO[nEnt]={};
+  //G4double scintSlow_PWO[nEnt]={};
+  mpCSI = new G4MaterialPropertiesTable();
+  mpCSI->AddProperty("RINDEX",opEn,RI_CSI,nEnt);
+  mpCSI->AddProperty("ABSLENGTH",opEn,Abslength_CSI,nEnt);
+  //mpPWO->AddProperty("FASTCOMPONENT",opEn,scintFast_PWO,nEnt);
+  //mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
+  /*G4double scintFast_CSI[nEnt] = {
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.03, 0.04,
+    0.05, 0.05, 0.04, 0.04, 0.04, 0.07, 0.17, 0.49, 0.59};/
+  };
+  G4double scintSlow_CSI[nEnt] = {
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.02, 0.03,
+    0.03, 0.03, 0.03, 0.02, 0.03, 0.05, 0.11, 0.32, 0.39
+  };*/
+  G4double scintFast_CSI[nEnt] = {
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.02, 0.05, 0.07,
+    0.08, 0.08, 0.07, 0.06, 0.07, 0.12, 0.28, 0.81, 0.98
+  };
+  mpCSI->AddProperty("FASTCOMPONENT",opEn,scintFast_CSI,nEnt);
+  //mpCSI->AddProperty("SLOWCOMPONENT",opEn,scintSlow_CSI,nEnt);
+  mpCSI->AddConstProperty("SCINTILLATIONYIELD",1900/MeV);
+  mpCSI->AddConstProperty("RESOLUTIONSCALE",1.0);
+  mpCSI->AddConstProperty("FASTTIMECONSTANT",15.7*ns);
+  //mpCSI->AddConstProperty("SLOWTIMECONSTANT",35.8*ns);
+  fCSI->SetMaterialPropertiesTable(mpCSI);
+  fCSI->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+  
+  //--- BGO ---
+  G4double RI_BGO[nEnt]; std::fill_n(RI_BGO,nEnt,2.15);
+  G4double Abslength_BGO[nEnt]; std::fill_n(Abslength_BGO,nEnt,40*cm);
+  //G4double scintFast_PWO[nEnt]={};
+  //G4double scintSlow_PWO[nEnt]={};
+  G4double scintFast_BGO[nEnt] = {
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.02,
+    0.12, 0.47, 0.98, 0.72, 0.08, 0.02, 0.00, 0.00, 0.00
+  };
+  
+  mpBGO = new G4MaterialPropertiesTable();
+  mpBGO->AddProperty("RINDEX",opEn,RI_BGO,nEnt);
+  mpBGO->AddProperty("ABSLENGTH",opEn,Abslength_BGO,nEnt);
+  mpBGO->AddProperty("FASTCOMPONENT",opEn,scintFast_BGO,nEnt);
+  //mpPWO->AddProperty("FASTCOMPONENT",opEn,scintSlow_PWO,nEnt);
+  mpBGO->AddConstProperty("SCINTILLATIONYIELD",8000/MeV);
+  mpBGO->AddConstProperty("RESOLUTIONSCALE",1.0);
+  mpBGO->AddConstProperty("FASTTIMECONSTANT",300*ns);
+  fBGO->SetMaterialPropertiesTable(mpBGO);
+  fBGO->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
 
   G4double RI_PMMA[nEnt] = {

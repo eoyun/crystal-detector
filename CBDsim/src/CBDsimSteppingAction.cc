@@ -50,12 +50,22 @@ void CBDsimSteppingAction::UserSteppingAction(const G4Step* step)
     fEventAction->fillEdeps(fEdep);
     fstep.Edep = step->GetTotalEnergyDeposit();
     fstep.E = step->GetPreStepPoint()->GetKineticEnergy();
-    fstep.px = (step->GetPostStepPoint()->GetMomentum().getX()+step->GetPreStepPoint()->GetMomentum().getX())/2.;  
-    fstep.py = (step->GetPostStepPoint()->GetMomentum().getY()+step->GetPreStepPoint()->GetMomentum().getY())/2.;  
-    fstep.pz = (step->GetPostStepPoint()->GetMomentum().getZ()+step->GetPreStepPoint()->GetMomentum().getZ())/2.;  
-    fstep.vx = (step->GetPostStepPoint()->GetPosition().getX()+step->GetPreStepPoint()->GetPosition().getX())/2.;  
-    fstep.vy = (step->GetPostStepPoint()->GetPosition().getY()+step->GetPreStepPoint()->GetPosition().getY())/2.;  
-    fstep.vz = (step->GetPostStepPoint()->GetPosition().getZ()+step->GetPreStepPoint()->GetPosition().getZ())/2.; 
+    if (step->GetTrack()->GetDefinition()->GetPDGCharge()==0){
+      fstep.px =step->GetPostStepPoint()->GetMomentum().getX();  
+      fstep.py =step->GetPostStepPoint()->GetMomentum().getY();  
+      fstep.pz =step->GetPostStepPoint()->GetMomentum().getZ();  
+      fstep.vx =step->GetPostStepPoint()->GetPosition().getX();  
+      fstep.vy =step->GetPostStepPoint()->GetPosition().getY();  
+      fstep.vz =step->GetPostStepPoint()->GetPosition().getZ();
+    }
+    else { 
+      fstep.px =step->GetPreStepPoint()->GetMomentum().getX()+G4UniformRand()*(step->GetPostStepPoint()->GetMomentum().getX()-step->GetPreStepPoint()->GetMomentum().getX())/2.;  
+      fstep.py =step->GetPreStepPoint()->GetMomentum().getY()+G4UniformRand()*(step->GetPostStepPoint()->GetMomentum().getY()-step->GetPreStepPoint()->GetMomentum().getY())/2.;  
+      fstep.pz =step->GetPreStepPoint()->GetMomentum().getZ()+G4UniformRand()*(step->GetPostStepPoint()->GetMomentum().getZ()-step->GetPreStepPoint()->GetMomentum().getZ())/2.;  
+      fstep.vx =step->GetPreStepPoint()->GetPosition().getX()+G4UniformRand()*(step->GetPostStepPoint()->GetPosition().getX()-step->GetPreStepPoint()->GetPosition().getX())/2.;  
+      fstep.vy =step->GetPreStepPoint()->GetPosition().getY()+G4UniformRand()*(step->GetPostStepPoint()->GetPosition().getY()-step->GetPreStepPoint()->GetPosition().getY())/2.;  
+      fstep.vz =step->GetPreStepPoint()->GetPosition().getZ()+G4UniformRand()*(step->GetPostStepPoint()->GetPosition().getZ()-step->GetPreStepPoint()->GetPosition().getZ())/2.;
+    } 
     fstep.vt =  step->GetPostStepPoint()->GetGlobalTime();
     fstep.pdgId = track->GetDefinition()->GetPDGEncoding();
     fstep.trackId = step->GetTrack()->GetTrackID();
