@@ -68,6 +68,7 @@ int main(int argc, char* argv[]){
   //std::cout<<"11"<<std::endl;
 
   TH1F* tenergy = new TH1F("energy detected", "energy detected;MeV;evt",200,low,high);
+  TH1F* tenergy_fullpeak = new TH1F("energy_detected_full", "energy detected;MeV;evt",200,low,high);
 
   TF1 *genergy = new TF1("genergy","gaus",10.3,10.7);genergy->SetLineColor(2);genergy->SetLineWidth(2);
 
@@ -254,7 +255,8 @@ int main(int argc, char* argv[]){
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.000355723);//LYSO calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.002009715);//BGO calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit+nhitfront)*0.010096081);//CsI calib const 0.00033838
-    if(Edep!=0) tenergy->Fill((nhit)*0.0005188);//LYSO one calib const 0.00033838
+    if(Edep!=0) tenergy->Fill((nhit)*0.000645224);//LYSO one calib const 0.00033838
+    if(Edep!=0&&Edep>1180) tenergy_fullpeak->Fill((nhit)*0.000645224);//LYSO one calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit)*0.003266);//BGO one calib const 0.00033838
     //if(Edep!=0) tenergy->Fill((nhit)*0.01648);//CsI one calib const 0.00033838
     //onecell 0.000333501 total 0.000322373
@@ -284,6 +286,7 @@ int main(int argc, char* argv[]){
   PDGID->Write();
   Leak_PDGID->Write();
   tenergy->Write();
+  tenergy_fullpeak->Write();
   tEdep->Write();
   tT->Write();
   tWav->Write();
